@@ -1,0 +1,32 @@
+- name: Render and save avi_conifgs for Aviconfig role
+  block:
+  - name: Define combined_avi_config var
+    set_fact:
+      combined_avi_config: {}
+
+  - name: Combine avi_config objects into desired format
+    set_fact:
+
+      combined_avi_config: "{{ combined_avi_config | combine(item.avi_config) }}"
+    vars:
+      item: "{{ lookup('template', item_template) | from_yaml }}"
+    loop: "{{ avi_config_templates }}"
+    loop_control:
+      loop_var: item_template
+
+  - name: Set final avi_config variable
+    set_fact:
+      avi_config: "{{ {'avi_config': combined_avi_config} }}"
+
+  - name: Save final avi_config to YAML file
+    copy:
+      content: "{{ avi_config | to_yaml }}"
+      dest: "{{ vs_parameters.vs_name }}-avi_config.yml"
+
+- name: Execute Aviconfig role
+  import_role:
+    name: vmware.alb.aviconfig
+  vars:
+    avi_creds_file: "../../common_vars/avi_credentials.yml"
+    avi_config_file: "{{ vs_parameters.vs_name }}-avi_config.yml"
+    avi_config_state: "{{ avi_config_state }}" 

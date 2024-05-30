@@ -1,0 +1,24 @@
+---
+- name: "Shared Basic VS scenario"
+  hosts: "localhost"
+  gather_facts: no
+  connection: "local"
+  vars_files:
+    - "../common_vars/avi_credentials.yml"
+  
+  tasks:
+          
+    - name: Create list of required template files
+      set_fact:
+        avi_config_templates:
+          - "../templates/pool_avi_config.j2"
+          - "../templates/vsvip_avi_config.j2"
+          - "../templates/healthmonitor_avi_config.j2"
+          - "../templates/virtualservice_avi_config.j2"
+
+    - name: Shared VIP Scenario | Setup ALL
+      import_role:
+        name: "../roles/create_vs"
+      vars:
+        combined_avi_config: "{{ avi_config }}"
+

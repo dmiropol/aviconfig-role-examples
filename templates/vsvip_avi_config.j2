@@ -1,0 +1,26 @@
+#jinja2: lstrip_blocks: True, trim_blocks:True
+avi_config:
+{% if vs_parameters.shared_vsvip_name is not defined %}
+  vsvip:
+    - name: "{{ 'vsVIP-' + vs_parameters.vs_name }}"
+      tenant: {{ tenant_name }}
+      cloud_ref: '{{ "/api/cloud/?name=" + cloud_name }}'
+      tier1_lr: "{{ vs_parameters.tier1_lr }}"
+      vip: 
+        - enabled: true
+          vip_id: "1"
+          {% if vs_parameters.ipam_network_subnet is defined %}
+          auto_allocate_ip: true
+          ipam_network_subnet: 
+            subnet:
+              ip_addr: 
+                addr: "{{ vs_parameters.ipam_network_subnet.ip_addr }}"
+                type: "V4"
+              mask: "{{ vs_parameters.ipam_network_subnet.mask }}"
+          {% else %}
+          ip_address: 
+            addr: "{{ vs_parameters.vip.ip_address }}"
+            type: "V4"
+          {% endif %}
+{% endif %}
+

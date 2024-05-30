@@ -1,0 +1,47 @@
+#jinja2: lstrip_blocks: True, trim_blocks:True
+{% set monitor_type_tcp = "HEALTH_MONITOR_TCP" %}
+{% set monitor_type_http = "HEALTH_MONITOR_HTTP" %}
+{% set monitor_type_https = "HEALTH_MONITOR_HTTPS" %}
+{% if pool_parameters.health_monitors is defined %}
+avi_config:
+  healthmonitor:
+    {% for monitor in pool_parameters.health_monitors %}
+      {% if monitor.name is defined and monitor.health_monitor is defined %}
+        {% set hm = monitor.health_monitor %}
+        {% set name = monitor.name %}
+        {% set http_response_codes = [] %}
+      {% endif %}
+    - name: "{{ monitor.name }}" 
+      type: "{{ monitor.type }}"
+      tenant_ref: "/api/tenant/?name={{ tenant_name }}"
+      {% if monitor.type == monitor_type_https %}
+      https_monitor: 
+        http_request: "{{ hm.http_request }}"
+        http_response_code: 
+        {% for response_code in hm.http_response_code %}
+        - "{{ response_code }}"   
+        {% endfor %}
+        {% if hm.ssl_attributes is defined %} 
+        ssl_attributes:
+          ssl_profile_ref: "{{ hm.ssl_attributes.ssl_profile_ref }}"
+        {% endif %}
+      {% elif monitor.type == monitor_type_http %}
+      http_monitor: 
+        http_request: "{{ hm.http_request }}"
+        http_response_code: 
+        {% for response_code in hm.http_response_code %}
+        - "{{ response_code }}" 
+        {% endfor %}   
+      {% elif monitor.type == monitor_type_tcp %}
+      tcp_monitor:
+        tcp_half_open: false
+      {% endif %}
+      receive_timeout: "{{ hm.receive_timeout }}"
+      failed_checks: "{{ hm.failed_checks }}"
+      successful_checks: "{{ hm.successful_checks }}"
+      send_interval: "{{ hm.send_interval }}"
+      monitor_port: "{{ hm.monitor_port | default(omit) }}"
+    {% endfor %}
+{% else %}
+avi_config: {}
+{% endif %}

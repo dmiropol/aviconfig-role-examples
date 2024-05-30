@@ -1,0 +1,47 @@
+#jinja2: lstrip_blocks: True, trim_blocks:True
+{% set health_monitor_refs = [] %}
+{% if pool_parameters.health_monitors is defined %}
+  {% for monitor in pool_parameters.health_monitors %}
+    {{ health_monitor_refs.append("/api/healthmonitor/?name=" + monitor.name) }}
+  {% endfor %}
+{% elif pool_parameters.health_monitor_refs is defined %}
+  {% for monitor_ref in pool_parameters.health_monitor_refs %}
+    {{ health_monitor_refs.append(monitor_ref) }}
+  {% endfor %}
+{% endif %}
+{% if pool_parameters.persistence_profile is defined %}
+  {% set persistence_profile_ref = "/api/applicationpersistenceprofile/?name=" + pool_parameters.persistence_profile.name %}
+{% elif pool_parameters.persistence_profile_ref is defined  %}
+  {% set persistence_profile_ref = pool_parameters.persistence_profile_ref %}
+{% endif %}
+
+{% if pool_ref is not defined %}
+avi_config:
+  pool:
+    {% for pool in pool_parameters.pools %}
+    - name: "{{ 'pool-' + pool.name }}"
+      {% if pool_parameters.health_monitors is defined %}
+      health_monitor_refs: {{ health_monitor_refs }}
+      {% endif %}
+      {% if persistence_profile_ref is defined %}
+      application_persistence_profile_ref: "{{ persistence_profile_ref | default(omit) }}"
+      {% endif %}
+      {% if pool.ssl_profile_ref is defined %}
+      ssl_profile_ref: "{{ pool.ssl_profile_ref | default(omit) }}"
+      {% endif %}
+      cloud_ref: {{ "/api/cloud/?name=" + cloud_name }}
+      tier1_lr: "{{ vs_parameters.tier1_lr }}"
+      lb_algorithm: "{{ pool.lb_algorithm | default(omit)}}"
+      servers: 
+        {% for server in pool.servers %}
+        - hostname: "{{ server.hostname }}"
+          ip:
+            addr: "{{ server.ip.addr }}"
+            type: "{{ server.ip.type }}"
+          port: "{{ server.port }}"
+        {% endfor %}
+    {% endfor %}
+{% else %}
+avi_config: {}
+{% endif %}
+

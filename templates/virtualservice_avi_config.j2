@@ -1,0 +1,49 @@
+#jinja2: lstrip_blocks: True, trim_blocks:True
+{% if vsvip_ref is defined %}
+  {% set vsvip_ref = vsvip_ref %} 
+{% else %} 
+  {% set vsvip_ref = "/api/vsvip/?name=" + 'vsVIP-' + vs_parameters.vs_name %}
+{% endif %}
+{% if vs_parameters.http_policy_set is defined %}
+  {% set http_policy_set_ref = "/api/httppolicyset/?name=" + vs_parameters.vs_name + '-' + vs_parameters.http_policy_set.name %}
+{% endif %}
+{% if vs_parameters.http_policy_set.http_request_policy is defined %}
+  {% set policy_action = vs_parameters.http_policy_set.http_request_policy.rules[0].action %}
+{% endif %}
+{% if pool_ref is not defined %}
+  {% set pool_ref = "/api/pool/?name=" + 'pool-' + pool_parameters.pools[0].name %}
+{% endif %}
+{% if policy_action is defined and policy_action == 'HTTP_SWITCHING_SELECT_POOL' %}
+  {% set pool_ref = "" %}
+{% else %}
+  {% set pool_ref = pool_ref %}
+{% endif %}
+
+avi_config:
+  virtualservice:
+    - name: "{{ vs_parameters.vs_name }}"
+      tenant: {{ tenant_name }}
+      vsvip_ref: "{{ vsvip_ref }}"
+      cloud_ref: '{{ "/api/cloud/?name=" + cloud_name }}'
+      application_profile_ref: "{{ vs_parameters.application_profile_ref }}"
+      pool_ref: "{{ pool_ref }}"
+      {% if vs_parameters.http_policy_set is defined %}
+      http_policies:
+        - http_policy_set_ref: "{{ http_policy_set_ref }}"
+      {% endif %}
+      services: 
+      {% for service in vs_parameters.ports %}
+        - port: "{{ service.port }}"
+          enable_ssl: "{{ service.enable_ssl }}"
+      {% endfor %}
+      enabled: true
+      se_group_ref: "{{ vs_parameters.se_group_ref }}"
+      analytics_policy:
+        all_headers: true
+        client_insights: NO_INSIGHTS
+        full_client_logs:
+          duration: 0
+          enabled: false
+          throttle: 10
+        metrics_realtime_update:
+          enabled: false

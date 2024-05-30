@@ -1,0 +1,46 @@
+---
+vs_parameters:
+  vs_name: "cb1074654-1"
+  vip:
+    ip_address: 172.26.136.138
+  ports: 
+    - port: 8393
+      enable_ssl: false
+
+  tier1_lr: "/infra/tier-1s/T1-Avi"
+  se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
+  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
+
+pool_parameters:
+  health_monitors:
+  - name: "Custom-HM-HTTP-8393"
+    type: "HEALTH_MONITOR_HTTP"
+    health_monitor:
+      http_request: "HEAD /Prod/HealthStatus/status.aspx HTTP/1.0"
+      http_response_code:
+        - "HTTP_2XX"
+      receive_timeout: 4
+      failed_checks: 3
+      successful_checks: 2
+      send_interval: 30
+  
+  pools:
+  - name: "asttbua"
+    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+    servers:
+      - hostname: "asttbua-server1"
+        ip:
+          addr: "172.26.136.8"
+          type: "V4"
+        port: 8393
+      - hostname: "asttbua-server2"
+        ip:
+          addr: "172.26.136.7"
+          type: "V4"
+        port: 8393
+
+  persistence_profile:
+    name: "Custom-Cookie-Persistence-Profile"
+    type: "PERSISTENCE_TYPE_HTTP_COOKIE"
+    cookie_name: "SERVERID"
+    

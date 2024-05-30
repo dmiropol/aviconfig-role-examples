@@ -1,0 +1,60 @@
+---
+vs_parameters:
+  vs_name: "http-sasprd"
+  vip:
+    ip_address: 172.26.0.73
+
+  ports: 
+    - port: 7980
+      enable_ssl: false
+    - port: 8343
+      enable_ssl: true
+
+  tier1_lr: "/infra/tier-1s/T1-Avi"
+  se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
+  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
+
+  http_policy_set:
+    name: "HTTPPolicySet-0"
+    http_security_policy: 
+      rules: 
+        action: "HTTP_SECURITY_ACTION_REDIRECT_TO_HTTPS"
+        https_port: 8343
+
+pool_parameters:
+  health_monitors:
+  - name: "Custom-HM-HTTPS-8343"
+    type: "HEALTH_MONITOR_HTTPS"
+    health_monitor:
+      http_request: "HEAD / HTTP/1.0"
+      http_response_code:
+        - "HTTP_2XX"
+      ssl_attributes:
+        ssl_profile_ref: "/api/sslprofile/?name=System-Standard" 
+      receive_timeout: 4
+      failed_checks: 3
+      successful_checks: 2
+      send_interval: 10
+      monitor_port: 8343
+  
+  persistence_profile: 
+    name: "Custom-Persistence-Client-IP-60"
+    type: "PERSISTENCE_TYPE_CLIENT_IP_ADDRESS"
+    timeout: 60
+
+  pools:
+  - name: "httpsasprd"
+    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+    ssl_profile_ref: "/api/sslprofile/?name=System-Standard"
+    servers:
+      - hostname: "sashttp_psvr1"
+        ip:
+          addr: "172.26.0.15"
+          type: "V4"
+        port: 8343
+      - hostname: "sashttp_psvr2"
+        ip:
+          addr: "172.26.0.18"
+          type: "V4"
+        port: 8343
+

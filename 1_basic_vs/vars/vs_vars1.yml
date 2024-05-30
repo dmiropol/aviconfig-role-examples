@@ -1,0 +1,46 @@
+---
+vs_parameters:
+  vs_name: "cammrh75vlayer"
+  vip:
+    ip_address: 172.26.142.60
+  
+  tier1_lr: "/infra/tier-1s/T1-Avi"
+  se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
+  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
+  ports: 
+    - port: 8443
+      enable_ssl: true
+      
+pool_parameters:
+  health_monitors:
+  - name: "Custom-HM-HTTPS-8443"
+    type: "HEALTH_MONITOR_HTTPS"
+    health_monitor:
+      http_request: "HEAD / HTTP/1.0"
+      http_response_code:
+        - "HTTP_2XX"
+      ssl_attributes:
+        ssl_profile_ref: "/api/sslprofile/?name=System-Standard" 
+      receive_timeout: 4
+      failed_checks: 3
+      successful_checks: 2
+      send_interval: 10
+      monitor_port: 8443
+
+  pools:
+  - name: "VMe-backend"
+    servers:
+      - hostname: "cammvlayer7b"
+        ip:
+          addr: "172.26.141.57"
+          type: "V4"
+        port: 8443
+      - hostname: "cammvlayer7c"
+        ip:
+          addr: "172.26.142.58"
+          type: "V4"
+        port: 8443
+
+  ssl_profile_ref: "/api/sslprofile/?name=System-Standard"
+  persistence_profile_ref: "/api/applicationpersistenceprofile/?name=System-Persistence-Client-IP"
+  
