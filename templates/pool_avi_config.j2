@@ -32,6 +32,7 @@ avi_config:
       cloud_ref: {{ "/api/cloud/?name=" + cloud_name }}
       tier1_lr: "{{ vs_parameters.tier1_lr }}"
       lb_algorithm: "{{ pool.lb_algorithm | default(omit)}}"
+      max_concurrent_connections_per_server: "{{ pool.max_connections | default(omit)}}"
       servers: 
         {% for server in pool.servers %}
         - hostname: "{{ server.hostname }}"
