@@ -13,16 +13,18 @@ avi_config:
       {% if security_policy is defined %}
       http_security_policy: 
         rules: 
-          - action:
-              action: "{{ security_policy.rules.action }}"
-              https_port: "{{ security_policy.rules.https_port }}"
-            enable: true
-            index: 1
+          {% for rule in security_policy.rules %}
+          - enable: true 
+            index: {{ loop.index}}
+            name: "Rule {{ loop.index}}"
             match:
               protocol:
                 match_criteria: "IS_IN"
-                protocols: "HTTP"
-            name: "Rule 1"
+                protocols: "{{ rule.protocol | default("HTTP") }}"
+            action:
+              action: "{{ rule.action | default("HTTP_SECURITY_ACTION_REDIRECT_TO_HTTPS") }}"
+              https_port: "{{ rule.https_port | default(443)}}"
+          {% endfor %}
       {% elif request_policy is defined %}
       http_request_policy:
         rules:

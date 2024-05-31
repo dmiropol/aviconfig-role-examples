@@ -20,6 +20,7 @@ vs_parameters:
     name: "HTTPPolicySet-0"
     http_security_policy: 
       rules: 
+      - protocol: "HTTP"
         action: "HTTP_SECURITY_ACTION_REDIRECT_TO_HTTPS"
         https_port: 7443
 
