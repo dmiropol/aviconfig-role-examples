@@ -4,7 +4,7 @@
 {% set cookie = "PERSISTENCE_TYPE_HTTP_COOKIE" %}
 avi_config:
   applicationpersistenceprofile:
-    - name: "{{ pool_parameters.persistence_profile.name }}" 
+    - name: "{{ vs_parameters.vs_name + '-' + pool_parameters.persistence_profile.name }}" 
       tenant: "{{ tenant_name }}"
       persistence_type: "{{ persistence_type }}"
       {% if persistence_type == client_ip %}

@@ -8,10 +8,10 @@ avi_config:
     {% for monitor in pool_parameters.health_monitors %}
       {% if monitor.name is defined and monitor.health_monitor is defined %}
         {% set hm = monitor.health_monitor %}
-        {% set name = monitor.name %}
+        {% set hm_name = vs_parameters.vs_name + '-' + monitor.name %}
         {% set http_response_codes = [] %}
       {% endif %}
-    - name: "{{ monitor.name }}" 
+    - name: "{{ hm_name }}" 
       type: "{{ monitor.type }}"
       tenant_ref: "/api/tenant/?name={{ tenant_name }}"
       {% if monitor.type == monitor_type_https %}

@@ -13,7 +13,7 @@ vs_parameters:
 
 pool_parameters:
   health_monitors:
-  - name: "Custom-HM-HTTP-8393"
+  - name: "Custom-HM-HTTP"
     type: "HEALTH_MONITOR_HTTP"
     health_monitor:
       http_request: "HEAD /Prod/HealthStatus/status.aspx HTTP/1.0"

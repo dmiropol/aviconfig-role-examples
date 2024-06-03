@@ -13,7 +13,7 @@ vs_parameters:
       
 pool_parameters:
   health_monitors:
-  - name: "Custom-HM-HTTPS-8443"
+  - name: "Custom-HM-HTTPS"
     type: "HEALTH_MONITOR_HTTPS"
     health_monitor:
       http_request: "HEAD / HTTP/1.0"

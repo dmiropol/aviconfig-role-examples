@@ -2,7 +2,7 @@
 {% set health_monitor_refs = [] %}
 {% if pool_parameters.health_monitors is defined %}
   {% for monitor in pool_parameters.health_monitors %}
-    {{ health_monitor_refs.append("/api/healthmonitor/?name=" + monitor.name) }}
+    {{ health_monitor_refs.append("/api/healthmonitor/?name=" + vs_parameters.vs_name + '-' + monitor.name) }}
   {% endfor %}
 {% elif pool_parameters.health_monitor_refs is defined %}
   {% for monitor_ref in pool_parameters.health_monitor_refs %}
@@ -10,7 +10,7 @@
   {% endfor %}
 {% endif %}
 {% if pool_parameters.persistence_profile is defined %}
-  {% set persistence_profile_ref = "/api/applicationpersistenceprofile/?name=" + pool_parameters.persistence_profile.name %}
+  {% set persistence_profile_ref = "/api/applicationpersistenceprofile/?name=" + vs_parameters.vs_name + '-' + pool_parameters.persistence_profile.name %}
 {% elif pool_parameters.persistence_profile_ref is defined  %}
   {% set persistence_profile_ref = pool_parameters.persistence_profile_ref %}
 {% endif %}

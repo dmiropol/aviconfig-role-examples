@@ -21,11 +21,18 @@ vs_parameters:
     http_request_policy:
       rules: 
       - host: "ibadmin.fexadev.example.com"
+        action: "HTTP_SWITCHING_SELECT_POOL"
       - host: "cbadmin.fexadev.example.com"
+        action: "HTTP_SWITCHING_SELECT_POOL"
       - host: "ibadmin.fexasit.example.com"
+        action: "HTTP_SWITCHING_SELECT_POOL"
       - host: "cbadmin.fexasit.example.com"
+        action: "HTTP_SWITCHING_SELECT_POOL"
       - host: "ibadmin.fexauat.example.com"
+        action: "HTTP_SWITCHING_SELECT_POOL"
       - host: "cbadmin.fexauat.example.com"
+        action: "HTTP_SWITCHING_SELECT_POOL"
+
 
 pool_parameters:
   health_monitor_refs: 
