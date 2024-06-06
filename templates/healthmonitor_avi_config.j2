@@ -2,13 +2,13 @@
 {% set monitor_type_tcp = "HEALTH_MONITOR_TCP" %}
 {% set monitor_type_http = "HEALTH_MONITOR_HTTP" %}
 {% set monitor_type_https = "HEALTH_MONITOR_HTTPS" %}
-{% if pool_parameters.health_monitors is defined %}
+{% if health_monitors is defined %}
 avi_config:
   healthmonitor:
-    {% for monitor in pool_parameters.health_monitors %}
+    {% for monitor in health_monitors %}
       {% if monitor.name is defined and monitor.health_monitor is defined %}
         {% set hm = monitor.health_monitor %}
-        {% set hm_name = vs_parameters.vs_name + '-' + monitor.name %}
+        {% set hm_name = vs_parameters.vs_name + '-' + monitor.name + '-' + (monitor.type | replace("HEALTH_MONITOR_", "")) %}
         {% set http_response_codes = [] %}
       {% endif %}
     - name: "{{ hm_name }}" 
@@ -36,10 +36,10 @@ avi_config:
       tcp_monitor:
         tcp_half_open: false
       {% endif %}
-      receive_timeout: "{{ hm.receive_timeout }}"
-      failed_checks: "{{ hm.failed_checks }}"
-      successful_checks: "{{ hm.successful_checks }}"
-      send_interval: "{{ hm.send_interval }}"
+      receive_timeout: "{{ hm.receive_timeout | default(omit) }}"
+      failed_checks: "{{ hm.failed_checks | default(omit) }}"
+      successful_checks: "{{ hm.successful_checks | default(omit) }}"
+      send_interval: "{{ hm.send_interval | default(omit) }}"
       monitor_port: "{{ hm.monitor_port | default(omit) }}"
     {% endfor %}
 {% else %}

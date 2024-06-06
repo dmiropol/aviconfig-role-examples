@@ -4,19 +4,29 @@
 {% else %} 
   {% set vsvip_ref = "/api/vsvip/?name=" + 'vsVIP-' + vs_parameters.vs_name %}
 {% endif %}
-{% if vs_parameters.http_policy_set is defined %}
-  {% set http_policy_set_ref = "/api/httppolicyset/?name=" + vs_parameters.vs_name + '-' + vs_parameters.http_policy_set.name %}
+{% if http_policy_set is defined %}
+  {% set http_policy_set_ref = "/api/httppolicyset/?name=" + vs_parameters.vs_name + '-' + http_policy_set.name %}
 {% endif %}
-{% if vs_parameters.http_policy_set.http_request_policy is defined %}
-  {% set policy_action = vs_parameters.http_policy_set.http_request_policy.rules[0].action %}
+{% if http_policy_set.http_request_policy is defined %}
+  {% set policy_action = http_policy_set.http_request_policy.rules[0].action %}
 {% endif %}
 {% if pool_ref is not defined %}
-  {% set pool_ref = "/api/pool/?name=" + 'pool-' + pool_parameters.pools[0].name %}
+  {% set pool_ref = "/api/pool/?name=" + 'pool-' + pools[0].name %}
 {% endif %}
 {% if policy_action is defined and policy_action == 'HTTP_SWITCHING_SELECT_POOL' %}
   {% set pool_ref = "" %}
 {% else %}
   {% set pool_ref = pool_ref %}
+{% endif %}
+{% if vs_parameters.application_profile_ref is defined %}
+  {% set application_profile_ref = vs_parameters.application_profile_ref %}
+{% else %}
+  {% set application_profile_ref = "/api/applicationprofile/?name=" +  vs_parameters.vs_name + '-' + application_profile.name %}
+{% endif %}
+{% if vs_parameters.ssl_profile_ref is defined %}
+  {% set ssl_profile_ref = vs_parameters.ssl_profile_ref %}
+  {% set ssl_certificates = vs_parameters.ssl_certificates %}
+
 {% endif %}
 
 avi_config:
@@ -25,19 +35,23 @@ avi_config:
       tenant: {{ tenant_name }}
       vsvip_ref: "{{ vsvip_ref }}"
       cloud_ref: '{{ "/api/cloud/?name=" + cloud_name }}'
-      application_profile_ref: "{{ vs_parameters.application_profile_ref }}"
+      application_profile_ref: "{{ application_profile_ref }}"
       pool_ref: "{{ pool_ref }}"
-      {% if vs_parameters.http_policy_set is defined %}
+      {% if http_policy_set is defined %}
       http_policies:
         - http_policy_set_ref: "{{ http_policy_set_ref }}"
       {% endif %}
       services: 
       {% for service in vs_parameters.ports %}
         - port: "{{ service.port }}"
-          enable_ssl: "{{ service.enable_ssl }}"
+          enable_ssl: "{{ service.enable_ssl | default(omit) }}"
       {% endfor %}
+      {% if ssl_profile_ref is defined and ssl_certificates is defined %}
+      ssl_profile_ref: "{{ ssl_profile_ref | default("/api/sslprofile/?name=System-Standard") }}"
+      ssl_certificates: "{{ ssl_certificates | default(["/api/sslkeyandcertificate/?name=System-Default-Cert"])}}"
+      {% endif %}
       enabled: true
-      se_group_ref: "{{ vs_parameters.se_group_ref }}"
+      se_group_ref: "{{ vs_parameters.se_group_ref | default("/api/serviceenginegroup/?name=Default-Group") }}"
       analytics_policy:
         all_headers: true
         client_insights: NO_INSIGHTS

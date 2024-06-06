@@ -11,9 +11,11 @@
     - name: Create list of required template files
       set_fact:
         avi_config_templates:
+          - "../templates/healthmonitor_avi_config.j2"
+          - "../templates/persistence_profile_avi_config.j2"
           - "../templates/pool_avi_config.j2"
           - "../templates/vsvip_avi_config.j2"
-          - "../templates/healthmonitor_avi_config.j2"
+          - "../templates/http_policy_avi_config.j2"
           - "../templates/virtualservice_avi_config.j2"
 
     - name: Shared VIP Scenario | Setup ALL

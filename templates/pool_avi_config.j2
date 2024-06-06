@@ -1,26 +1,26 @@
 #jinja2: lstrip_blocks: True, trim_blocks:True
 {% set health_monitor_refs = [] %}
-{% if pool_parameters.health_monitors is defined %}
-  {% for monitor in pool_parameters.health_monitors %}
-    {{ health_monitor_refs.append("/api/healthmonitor/?name=" + vs_parameters.vs_name + '-' + monitor.name) }}
+{% if health_monitors is defined %}
+  {% for monitor in health_monitors %}
+    {{ health_monitor_refs.append("/api/healthmonitor/?name=" + vs_parameters.vs_name + '-' + monitor.name + '-' + (monitor.type | replace("HEALTH_MONITOR_", ""))) }}
   {% endfor %}
 {% elif pool_parameters.health_monitor_refs is defined %}
   {% for monitor_ref in pool_parameters.health_monitor_refs %}
     {{ health_monitor_refs.append(monitor_ref) }}
   {% endfor %}
 {% endif %}
-{% if pool_parameters.persistence_profile is defined %}
-  {% set persistence_profile_ref = "/api/applicationpersistenceprofile/?name=" + vs_parameters.vs_name + '-' + pool_parameters.persistence_profile.name %}
-{% elif pool_parameters.persistence_profile_ref is defined  %}
-  {% set persistence_profile_ref = pool_parameters.persistence_profile_ref %}
+{% if persistence_profile is defined %}
+  {% set persistence_profile_ref = "/api/applicationpersistenceprofile/?name=" + vs_parameters.vs_name + '-' + persistence_profile.name %}
+{% elif persistence_profile_ref is defined  %}
+  {% set persistence_profile_ref = persistence_profile_ref %}
 {% endif %}
 
 {% if pool_ref is not defined %}
 avi_config:
   pool:
-    {% for pool in pool_parameters.pools %}
+    {% for pool in pools %}
     - name: "{{ 'pool-' + pool.name }}"
-      {% if pool_parameters.health_monitors is defined %}
+      {% if health_monitors is defined %}
       health_monitor_refs: {{ health_monitor_refs }}
       {% endif %}
       {% if persistence_profile_ref is defined %}
@@ -39,7 +39,8 @@ avi_config:
           ip:
             addr: "{{ server.ip.addr }}"
             type: "{{ server.ip.type }}"
-          port: "{{ server.port }}"
+          port: "{{ server.port | default(omit) }}"
+          ratio: "{{ server.ratio | default(omit) }}"
         {% endfor %}
     {% endfor %}
 {% else %}

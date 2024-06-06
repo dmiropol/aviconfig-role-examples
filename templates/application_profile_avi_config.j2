@@ -1,0 +1,16 @@
+#jinja2: lstrip_blocks: True, trim_blocks:True
+
+{% if application_profile is defined %}
+avi_config:
+  applicationprofile:
+    - name: "{{ vs_parameters.vs_name + '-' + application_profile.name }}" 
+      tenant: "{{ tenant_name }}"
+      type: "{{ application_profile.type }}"
+      {% if application_profile.type == "APPLICATION_PROFILE_TYPE_HTTP" %}
+      http_profile: 
+        keepalive_header: "{{ application_profile.keepalive_header | default(omit) }}"
+        use_app_keepalive_timeout: "{{ application_profile.use_app_keepalive_timeout | default(omit) }}"
+      {% endif %}
+{% else %}
+avi_config: {}
+{% endif %}

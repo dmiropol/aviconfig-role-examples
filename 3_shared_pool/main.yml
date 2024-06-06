@@ -13,7 +13,7 @@
           avi_credentials: "{{ avi_credentials }}"
           api_context: "{{ avi_api_context | default(omit) }}"
           http_method: get
-          path: "pool/?name={{ pool_parameters.pools.shared_pool_name }}"
+          path: "pool/?name={{ pools.shared_pool_name }}"
           tenant: "{{ tenant_name }}"
         register: fetched_pool
         
@@ -21,15 +21,17 @@
         set_fact:
           pool_ref: "/api/pool/?name={{ fetched_pool.obj.results[0].name }}" 
         when: fetched_pool is defined
-      when: pool_parameters.pools.shared_pool_name is defined
+      when: pools.shared_pool_name is defined
           
     - name: Create list of required template files
       set_fact:
         avi_config_templates:
+          - "../templates/application_profile_avi_config.j2"
           - "../templates/healthmonitor_avi_config.j2"
           - "../templates/persistence_profile_avi_config.j2"
           - "../templates/pool_avi_config.j2"
           - "../templates/vsvip_avi_config.j2"
+          - "../templates/http_policy_avi_config.j2"
           - "../templates/virtualservice_avi_config.j2"
 
     - name: Shared VIP Scenario | Setup ALL
