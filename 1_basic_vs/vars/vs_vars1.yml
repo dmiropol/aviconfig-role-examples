@@ -26,14 +26,10 @@ pools:
 - name: "VMe-backend"
   servers:
     - hostname: "cammvlayer7b"
-      ip:
-        addr: "172.26.141.57"
-        type: "V4"
+      ip_address: "172.26.141.57"
       port: 8443
     - hostname: "cammvlayer7c"
-      ip:
-        addr: "172.26.142.58"
-        type: "V4"
+      ip_address: "172.26.142.58"
       port: 8443
 
 persistence_profile: 

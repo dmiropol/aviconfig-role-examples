@@ -1,6 +1,6 @@
 ---
 vs_parameters:
-  vs_name: "cb1074654-1"
+  vs_name: "cb1163540-1"
   vip:
     ip_address: 172.26.136.138
   ports: 
@@ -26,14 +26,10 @@ pools:
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   servers:
     - hostname: "asttbua-server1"
-      ip:
-        addr: "172.26.136.8"
-        type: "V4"
+      ip_address: "172.26.136.8"
       port: 8393
     - hostname: "asttbua-server2"
-      ip:
-        addr: "172.26.136.7"
-        type: "V4"
+      ip_address: "172.26.136.7"
       port: 8393
 
 persistence_profile:

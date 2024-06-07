@@ -35,57 +35,43 @@ pools:
   max_connections: 2048
   servers:
     - hostname: "CB1047758"
-      ip:
-        addr: "172.26.152.140"
-        type: "V4"
+      ip_address: "172.26.152.140"
       port: 10100
     - hostname: "CB1047759"
-      ip:
-        addr: "172.26.152.143"
-        type: "V4"
+      ip_address: "172.26.152.143"
       port: 10100
 - name: "backend1cbdev"
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   max_connections: 2048
   servers:
     - hostname: "CB1047758"
-      ip:
-        addr: "172.26.152.140"
-        type: "V4"
+      ip_address: "172.26.152.140"
       port: 10100
 - name: "backend2ibsit"
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   max_connections: 2048
   servers:
     - hostname: "CB1047758"
-      ip:
-        addr: "172.26.152.140"
-        type: "V4"
+      ip_address: "172.26.152.140"
       port: 10200
 - name: "backend2cbsit"
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   max_connections: 2048
   servers:
     - hostname: "CB1047758"
-      ip:
-        addr: "172.26.152.140"
-        type: "V4"
+      ip_address: "172.26.152.140"
       port: 10200
 - name: "backend3uat"
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   max_connections: 2048
   servers:
     - hostname: "CB1047758"
-      ip:
-        addr: "172.26.152.140"
-        type: "V4"
+      ip_address: "172.26.152.140"
       port: 10300
 - name: "backend3cbuat"
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   max_connections: 2048
   servers:
     - hostname: "CB1047758"
-      ip:
-        addr: "172.26.152.140"
-        type: "V4"
+      ip_address: "172.26.152.140"
       port: 10300

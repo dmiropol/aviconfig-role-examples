@@ -32,27 +32,19 @@ pools:
 - name: "ldaps_service_back"
   servers:
     - hostname: "ldap01"
-      ip:
-        addr: "159.231.7.165"
-        type: "V4"
+      ip_address: "159.231.7.165"
       port: 3269
       ratio: 10
     - hostname: "ldap02"
-      ip:
-        addr: "159.231.1.166"
-        type: "V4"
+      ip_address: "159.231.1.166"
       port: 3269
       ratio: 10
     - hostname: "ldap03"
-      ip:
-        addr: "159.231.7.166"
-        type: "V4"
+      ip_address: "159.231.7.166"
       port: 3269
       ratio: 10
     - hostname: "ldap04"
-      ip:
-        addr: "159.231.1.165"
-        type: "V4"
+      ip_address: "159.231.1.165"
       port: 3269
       ratio: 10
   ssl_profile_ref: "/api/sslprofile/?name=System-Standard"

@@ -32,13 +32,9 @@ pools:
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   servers:
     - hostname: "CB2057895_prepte1casa_11100_ssl"
-      ip:
-        addr: "172.26.152.140"
-        type: "V4"
+      ip_address: "172.26.152.140"
       port: 11100
     - hostname: "CB2057896_prepte1casa_11100_ssl"
-      ip:
-        addr: "172.26.152.143"
-        type: "V4"
+      ip_address: "172.26.152.143"
       port: 11100
   ssl_profile_ref: "/api/sslprofile/?name=System-Standard"

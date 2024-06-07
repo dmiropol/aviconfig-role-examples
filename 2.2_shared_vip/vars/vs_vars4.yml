@@ -42,12 +42,8 @@ pools:
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   servers:
     - hostname: "sashttps_psvr1"
-      ip:
-        addr: "172.26.0.15"
-        type: "V4"
+      ip_address: "172.26.0.15"
       port: 7443
     - hostname: "sashttps_psvr2"
-      ip:
-        addr: "172.26.0.18"
-        type: "V4"
+      ip_address: "172.26.0.18"
       port: 7443

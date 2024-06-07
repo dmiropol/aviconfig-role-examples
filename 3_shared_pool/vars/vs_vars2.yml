@@ -1,6 +1,6 @@
 ---
 vs_parameters:
-  vs_name: "cb1074654-2"
+  vs_name: "cb1163540-2"
 
   vip:
     ip_address: 172.26.136.139
@@ -11,7 +11,7 @@ vs_parameters:
 
   tier1_lr: "T1-Avi"
   se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
-  application_profile_ref: "/api/applicationprofile/?name=cb1074654-1-Custom-Profile"
+  application_profile_ref: "/api/applicationprofile/?name=cb1163540-1-Keepalive-Profile"
 
 pools:
   shared_pool_name: "pool-asttbua"

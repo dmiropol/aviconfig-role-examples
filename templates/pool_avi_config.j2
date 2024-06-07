@@ -37,8 +37,8 @@ avi_config:
         {% for server in pool.servers %}
         - hostname: "{{ server.hostname }}"
           ip:
-            addr: "{{ server.ip.addr }}"
-            type: "{{ server.ip.type }}"
+            addr: "{{ server.ip_address }}"
+            type: "V4"
           port: "{{ server.port | default(omit) }}"
           ratio: "{{ server.ratio | default(omit) }}"
         {% endfor %}
