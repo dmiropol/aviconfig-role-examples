@@ -1,0 +1,50 @@
+---
+vs_parameters:
+  vs_name: "ldaps_service_front"
+  vip:
+    ip_address: 172.26.0.132
+  ssl_certificates:
+    - "/api/sslkeyandcertificate/?name=System-Default-Cert"
+    - "/api/sslkeyandcertificate/?name=System-Default-Cert-EC"
+  ssl_profile_ref: "/api/sslprofile/?name=System-Standard"
+  tier1_lr: "T1-Avi"
+  se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
+  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
+  ports: 
+    - port: 8080
+      enable_ssl: true
+
+health_monitors:
+- name: "Custom-HM"
+  type: "HEALTH_MONITOR_HTTPS"
+  health_monitor:
+    http_request: "HEAD / HTTP/1.0"
+    http_response_code:
+      - "HTTP_2XX"
+    ssl_attributes:
+      ssl_profile_ref: "/api/sslprofile/?name=System-Standard" 
+    monitor_port: 3269
+    failed_checks: 3
+    successful_checks: 5
+    send_interval: 5
+
+pools:
+- name: "ldaps_service_back"
+  servers:
+    - hostname: "ldap01"
+      ip_address: "159.231.7.165"
+      port: 3269
+      ratio: 10
+    - hostname: "ldap02"
+      ip_address: "159.231.1.166"
+      port: 3269
+      ratio: 10
+    - hostname: "ldap03"
+      ip_address: "159.231.7.166"
+      port: 3269
+      ratio: 10
+    - hostname: "ldap04"
+      ip_address: "159.231.1.165"
+      port: 3269
+      ratio: 10
+  ssl_profile_ref: "/api/sslprofile/?name=System-Standard"

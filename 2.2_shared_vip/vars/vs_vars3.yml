@@ -1,31 +1,20 @@
 ---
 vs_parameters:
-  vs_name: "http-sasprd1"
+  vs_name: "https-sasprd"
   shared_vsvip_name: "vsVIP-http-sasprd"
   vip:
-    ip_address:
-      addr: 172.26.0.73
-      type: V4
+    ip_address: 172.26.0.73
+
   ports: 
-    - port: 7080
-      enable_ssl: false
-    - port: 7443
+    - port: 8343
       enable_ssl: false
 
   tier1_lr: "T1-Avi"
   se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
-  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
-
-http_policy_set:
-  name: "HTTPPolicySet-0"
-  http_security_policy: 
-    rules: 
-    - protocol: "HTTP"
-      action: "HTTP_SECURITY_ACTION_REDIRECT_TO_HTTPS"
-      https_port: 7443
+  application_profile_ref: "/api/applicationprofile/?name=System-L4-Application"
 
 health_monitors:
-- name: "Custom-HM"
+- name: "Custom-HM3"
   type: "HEALTH_MONITOR_HTTPS"
   health_monitor:
     http_request: "HEAD / HTTP/1.0"
@@ -33,29 +22,29 @@ health_monitors:
       - "HTTP_2XX"
     ssl_attributes:
       ssl_profile_ref: "/api/sslprofile/?name=System-Standard" 
-    monitor_port: 7443 
-- name: "Custom-HM"
+    monitor_port: 8343
+- name: "Custom-HM3"
   type: "HEALTH_MONITOR_HTTP"
   health_monitor:
     http_request: "HEAD / HTTP/1.0"
     http_response_code:
       - "HTTP_2XX"
-    monitor_port: 7443 
-    
+    monitor_port: 8343
+
+
 persistence_profile: 
   name: "Custom-Persistence-Client-IP"
   type: "PERSISTENCE_TYPE_CLIENT_IP_ADDRESS"
   timeout: 60
 
 pools:
-- name: "httpssasprd1"
+- name: "httpssasprd"
   lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
   servers:
     - hostname: "sashttp_psvr1"
       ip_address: "172.26.0.15"
-      port: 7443
+      port: 8343
     - hostname: "sashttp_psvr2"
       ip_address: "172.26.0.18"
-      port: 7443
-
+      port: 8343
 

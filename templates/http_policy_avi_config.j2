@@ -1,14 +1,16 @@
 #jinja2: lstrip_blocks: True, trim_blocks:True
-{% if vs_parameters.http_policy_set.http_security_policy is defined %}
-  {% set security_policy =  vs_parameters.http_policy_set.http_security_policy %}
-{% endif %}
-{% if vs_parameters.http_policy_set.http_request_policy is defined %}
-  {% set request_policy =  vs_parameters.http_policy_set.http_request_policy %}
-{% endif %}
-{% set rules_list = [] %}
+
+{% if http_policy_set is defined %}
+  {% if http_policy_set.http_security_policy is defined %}
+    {% set security_policy =  http_policy_set.http_security_policy %}
+  {% endif %}
+  {% if http_policy_set.http_request_policy is defined %}
+    {% set request_policy =  http_policy_set.http_request_policy %}
+  {% endif %}
+  {% set rules_list = [] %}
 avi_config:
   httppolicyset:
-    - name: "{{ vs_parameters.vs_name + '-' + vs_parameters.http_policy_set.name }}"
+    - name: "{{ vs_parameters.vs_name + '-' + http_policy_set.name }}"
       tenant: {{ tenant_name }}
       {% if security_policy is defined %}
       http_security_policy: 
@@ -40,6 +42,9 @@ avi_config:
                   - "{{ rule.host }}"
             switching_action:
               action: "{{ rule.action | default("HTTP_SWITCHING_SELECT_POOL")}}"
-              pool_ref: "/api/pool/?name=pool-{{ pool_parameters.pools[loop.index0].name }}"
+              pool_ref: "/api/pool/?name=pool-{{ pools[loop.index0].name }}"
           {% endfor %}
       {% endif %}
+{% else %}
+  avi_config: {}
+{% endif %}

@@ -1,103 +1,77 @@
 ---
 vs_parameters:
   vs_name: "cb1128651-http"
-  ssl_certificates:
-    - "/api/sslkeyandcertificate/?name=System-Default-Cert"
-    - "/api/sslkeyandcertificate/?name=System-Default-Cert-EC"
   ipam_network_subnet:
     ip_addr: "172.16.12.0"
     mask: 24
   ports: 
     - port: 443
-      enable_ssl: true
+      enable_ssl: false
   
-  tier1_lr: "/infra/tier-1s/T1-Avi"
-  ssl_profile_ref: "/api/sslprofile/?name=System-Standard"
+  tier1_lr: "T1-Avi"
   se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
-  application_profile_ref: "/api/applicationprofile/?name=System-Secure-HTTP"
+  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
 
-  http_policy_set:
-    name: HTTPPolicySet-0
-    http_request_policy:
-      rules: 
-      - host: "ibadmin.fexadev.example.com"
-        action: "HTTP_SWITCHING_SELECT_POOL"
-      - host: "cbadmin.fexadev.example.com"
-        action: "HTTP_SWITCHING_SELECT_POOL"
-      - host: "ibadmin.fexasit.example.com"
-        action: "HTTP_SWITCHING_SELECT_POOL"
-      - host: "cbadmin.fexasit.example.com"
-        action: "HTTP_SWITCHING_SELECT_POOL"
-      - host: "ibadmin.fexauat.example.com"
-        action: "HTTP_SWITCHING_SELECT_POOL"
-      - host: "cbadmin.fexauat.example.com"
-        action: "HTTP_SWITCHING_SELECT_POOL"
+http_policy_set:
+  name: HTTPPolicySet-0
+  http_request_policy:
+    rules: 
+    - host: "ibadmin.fexadev.example.com"
+      action: "HTTP_SWITCHING_SELECT_POOL"
+    - host: "cbadmin.fexadev.example.com"
+      action: "HTTP_SWITCHING_SELECT_POOL"
+    - host: "ibadmin.fexasit.example.com"
+      action: "HTTP_SWITCHING_SELECT_POOL"
+    - host: "cbadmin.fexasit.example.com"
+      action: "HTTP_SWITCHING_SELECT_POOL"
+    - host: "ibadmin.fexauat.example.com"
+      action: "HTTP_SWITCHING_SELECT_POOL"
+    - host: "cbadmin.fexauat.example.com"
+      action: "HTTP_SWITCHING_SELECT_POOL"
 
-
-pool_parameters:
-  health_monitor_refs: 
-    - "/api/healthmonitor/?name=System-HTTP"
-  pools:
-  - name: "backend1dev"
-    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
-    max_connections: 2048
-    servers:
-      - hostname: "CB1047758"
-        ip:
-          addr: "172.26.152.140"
-          type: "V4"
-        port: 10100
-      - hostname: "CB1047759"
-        ip:
-          addr: "172.26.152.143"
-          type: "V4"
-        port: 10100
-  - name: "backend1cbdev"
-    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
-    max_connections: 2048
-    servers:
-      - hostname: "CB1047758"
-        ip:
-          addr: "172.26.152.140"
-          type: "V4"
-        port: 10100
-  - name: "backend2ibsit"
-    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
-    max_connections: 2048
-    servers:
-      - hostname: "CB1047758"
-        ip:
-          addr: "172.26.152.140"
-          type: "V4"
-        port: 10200
-  - name: "backend2cbsit"
-    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
-    max_connections: 2048
-    servers:
-      - hostname: "CB1047758"
-        ip:
-          addr: "172.26.152.140"
-          type: "V4"
-        port: 10200
-  - name: "backend3uat"
-    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
-    max_connections: 2048
-    servers:
-      - hostname: "CB1047758"
-        ip:
-          addr: "172.26.152.140"
-          type: "V4"
-        port: 10300
-  - name: "backend3cbuat"
-    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
-    max_connections: 2048
-    servers:
-      - hostname: "CB1047758"
-        ip:
-          addr: "172.26.152.140"
-          type: "V4"
-        port: 10300
-
-
-
-
+pools:
+- name: "backend1dev"
+  lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+  max_connections: 2048
+  servers:
+    - hostname: "CB1047758"
+      ip_address: "172.26.152.140"
+      port: 10100
+    - hostname: "CB1047759"
+      ip_address: "172.26.152.143"
+      port: 10100
+- name: "backend1cbdev"
+  lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+  max_connections: 2048
+  servers:
+    - hostname: "CB1047758"
+      ip_address: "172.26.152.140"
+      port: 10100
+- name: "backend2ibsit"
+  lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+  max_connections: 2048
+  servers:
+    - hostname: "CB1047758"
+      ip_address: "172.26.152.140"
+      port: 10200
+- name: "backend2cbsit"
+  lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+  max_connections: 2048
+  servers:
+    - hostname: "CB1047758"
+      ip_address: "172.26.152.140"
+      port: 10200
+- name: "backend3uat"
+  lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+  max_connections: 2048
+  servers:
+    - hostname: "CB1047758"
+      ip_address: "172.26.152.140"
+      port: 10300
+- name: "backend3cbuat"
+  lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+  max_connections: 2048
+  servers:
+    - hostname: "CB1047758"
+      ip_address: "172.26.152.140"
+      port: 10300

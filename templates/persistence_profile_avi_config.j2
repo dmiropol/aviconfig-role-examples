@@ -1,16 +1,21 @@
 #jinja2: lstrip_blocks: True, trim_blocks:True
-{% set persistence_type = pool_parameters.persistence_profile.type %}
-{% set client_ip = "PERSISTENCE_TYPE_CLIENT_IP_ADDRESS" %}
-{% set cookie = "PERSISTENCE_TYPE_HTTP_COOKIE" %}
+
+{% if persistence_profile is defined %}
+  {% set persistence_type = persistence_profile.type %}
+  {% set client_ip = "PERSISTENCE_TYPE_CLIENT_IP_ADDRESS" %}
+  {% set cookie = "PERSISTENCE_TYPE_HTTP_COOKIE" %}
 avi_config:
   applicationpersistenceprofile:
-    - name: "{{ vs_parameters.vs_name + '-' + pool_parameters.persistence_profile.name }}" 
+    - name: "{{ vs_parameters.vs_name + '-' + persistence_profile.name }}" 
       tenant: "{{ tenant_name }}"
       persistence_type: "{{ persistence_type }}"
       {% if persistence_type == client_ip %}
       ip_persistence_profile: 
-        ip_persistent_timeout: "{{ pool_parameters.persistence_profile.timeout }}"
+        ip_persistent_timeout: "{{ persistence_profile.timeout }}"
       {% elif persistence_type == cookie %}
       http_cookie_persistence_profile: 
-          cookie_name: "{{ pool_parameters.persistence_profile.cookie_name }}"
+          cookie_name: "{{ persistence_profile.cookie_name }}"
       {% endif %}
+{% else %}
+avi_config: {}
+{% endif %}

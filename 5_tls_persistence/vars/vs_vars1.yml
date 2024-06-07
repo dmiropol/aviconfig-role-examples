@@ -1,45 +1,40 @@
 ---
 vs_parameters:
-  vs_name: "cb1128651"
+  vs_name: "cb1385652"
+  vip:
+    ip_address: 172.26.136.208
   ssl_certificates:
     - "/api/sslkeyandcertificate/?name=System-Default-Cert"
     - "/api/sslkeyandcertificate/?name=System-Default-Cert-EC"
-  vip:
-    ip_address: 172.26.136.208
-  
-  tier1_lr: "/infra/tier-1s/T1-Avi"
   ssl_profile_ref: "/api/sslprofile/?name=System-Standard"
+  tier1_lr: "T1-Avi"
   se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
-  application_profile_ref: "/api/applicationprofile/?name=System-Secure-HTTP"
+  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
   ports: 
     - port: 443
       enable_ssl: true
 
-  http_policy_set:
-    name: HTTPPolicySet-0
-    http_request_policy:
-      rules: 
-      - match_criteria: "HDR_ENDS_WITH"
-        action: "HTTP_SWITCHING_SELECT_POOL"
-        host: 
-          - "casa.ppte.example.com"
+http_policy_set:
+  name: HTTPPolicySet-0
+  http_request_policy:
+    rules: 
+    - match_criteria: "HDR_ENDS_WITH"
+      action: "HTTP_SWITCHING_SELECT_POOL"
+      host: 
+      - "casa.ppte.example.com"
 
-pool_parameters:
-  health_monitor_refs:
-    - "/api/healthmonitor?name=System-HTTPS"
-  persistence_profile_ref: "/api/applicationpersistenceprofile/?name=System-Persistence-TLS"
+health_monitor_refs:
+  - "/api/healthmonitor?name=System-HTTP"
+persistence_profile_ref: "/api/applicationpersistenceprofile/?name=System-Persistence-TLS"
+
+pools:
+- name: "casa_prepte1_ssl"
+  lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
+  servers:
+    - hostname: "CB2057895_prepte1casa_11100_ssl"
+      ip_address: "172.26.152.140"
+      port: 11100
+    - hostname: "CB2057896_prepte1casa_11100_ssl"
+      ip_address: "172.26.152.143"
+      port: 11100
   ssl_profile_ref: "/api/sslprofile/?name=System-Standard"
-  pools:
-  - name: "casa_prepte1_ssl"
-    lb_algorithm: "LB_ALGORITHM_ROUND_ROBIN"
-    servers:
-      - hostname: "CB2057895_prepte1casa_11100_ssl"
-        ip:
-          addr: "172.26.152.140"
-          type: "V4"
-        port: 11100
-      - hostname: "CB2057896_prepte1casa_11100_ssl"
-        ip:
-          addr: "172.26.152.143"
-          type: "V4"
-        port: 11100

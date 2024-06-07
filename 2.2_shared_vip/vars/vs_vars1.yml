@@ -6,13 +6,19 @@ vs_parameters:
 
   ports: 
     - port: 7980
-      enable_ssl: false
-    - port: 8343
-      enable_ssl: false
-
+  
   tier1_lr: "T1-Avi"
   se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
   application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
+
+health_monitors:
+- name: "Custom-HM1"
+  type: "HEALTH_MONITOR_HTTP"
+  health_monitor:
+    http_request: "HEAD / HTTP/1.0"
+    http_response_code:
+      - "HTTP_2XX"
+    monitor_port: 7980
 
 http_policy_set:
   name: "HTTPPolicySet-0"
@@ -21,25 +27,6 @@ http_policy_set:
     - protocol: "HTTP"
       action: "HTTP_SECURITY_ACTION_REDIRECT_TO_HTTPS"
       https_port: 8343
-
-health_monitors:
-- name: "Custom-HM"
-  type: "HEALTH_MONITOR_HTTPS"
-  health_monitor:
-    http_request: "HEAD / HTTP/1.0"
-    http_response_code:
-      - "HTTP_2XX"
-    ssl_attributes:
-      ssl_profile_ref: "/api/sslprofile/?name=System-Standard" 
-    monitor_port: 8343
-- name: "Custom-HM"
-  type: "HEALTH_MONITOR_HTTP"
-  health_monitor:
-    http_request: "HEAD / HTTP/1.0"
-    http_response_code:
-      - "HTTP_2XX"
-    monitor_port: 8343
-
 
 persistence_profile: 
   name: "Custom-Persistence-Client-IP"
@@ -52,8 +39,8 @@ pools:
   servers:
     - hostname: "sashttp_psvr1"
       ip_address: "172.26.0.15"
-      port: 8343
+      port: 7980
     - hostname: "sashttp_psvr2"
       ip_address: "172.26.0.18"
-      port: 8343
+      port: 7980
 

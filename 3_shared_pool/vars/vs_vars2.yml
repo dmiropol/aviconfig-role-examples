@@ -1,6 +1,6 @@
 ---
 vs_parameters:
-  vs_name: "cb1074654-2"
+  vs_name: "cb1163540-2"
 
   vip:
     ip_address: 172.26.136.139
@@ -9,16 +9,15 @@ vs_parameters:
     - port: 8393
       enable_ssl: false
 
-  tier1_lr: "/infra/tier-1s/T1-Avi"
+  tier1_lr: "T1-Avi"
   se_group_ref: "/api/serviceenginegroup/?name=Default-Group"
-  application_profile_ref: "/api/applicationprofile/?name=System-HTTP"
+  application_profile_ref: "/api/applicationprofile/?name=cb1163540-1-Keepalive-Profile"
 
-pool_parameters:
-  pools:
-    shared_pool_name: "pool-asttbua"
+pools:
+  shared_pool_name: "pool-asttbua"
 
-  persistence_profile:
-    name: "Custom-Cookie-Persistence-Profile"
-    type: "PERSISTENCE_TYPE_HTTP_COOKIE"
-    cookie_name: "SERVERID"
+persistence_profile:
+  name: "Custom-Cookie-Persistence-Profile"
+  type: "PERSISTENCE_TYPE_HTTP_COOKIE"
+  cookie_name: "SERVERID"
     

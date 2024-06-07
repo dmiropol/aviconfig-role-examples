@@ -1,6 +1,6 @@
 #jinja2: lstrip_blocks: True, trim_blocks:True
-avi_config:
 {% if vs_parameters.shared_vsvip_name is not defined %}
+avi_config:
   vsvip:
     - name: "{{ 'vsVIP-' + vs_parameters.vs_name }}"
       tenant: {{ tenant_name }}
@@ -22,5 +22,7 @@ avi_config:
             addr: "{{ vs_parameters.vip.ip_address }}"
             type: "V4"
           {% endif %}
+{% else %}
+avi_config: {}
 {% endif %}
 
